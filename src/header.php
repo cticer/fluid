@@ -16,6 +16,10 @@
 	$GLOBALS['email_prompt'] = true;
 	$GLOBALS['pw_prompt'] = false;
 	
+	foreach( glob("include/pre/*.php") as $filename)
+	{
+		include $filename;
+	}
 
 	foreach( glob("include/*.php") as $filename)
 	{

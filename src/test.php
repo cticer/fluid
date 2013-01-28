@@ -10,10 +10,9 @@
 <?php
 	include "templates/login_status.php";
 	
-	$salt = Security::createSalt();
-	$password = Security::hashPass($salt,"deb24ian!");
-	echo $salt."<br/>";
-	echo $password."<br/>";
+	$auth = new Authorization(array("user_id"=>"3","authorized_key"=>"test1"));
+	$auth->databaseWrite();
+	echo $user->verifyAuthorization("deb24IAN!");
 ?>
 	</body>
 </html>
