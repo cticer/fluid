@@ -12,7 +12,7 @@
 	
 	$auth = new Authorization(array("user_id"=>"3","authorized_key"=>"test1"));
 	$auth->databaseWrite();
-	echo $user->verifyAuthorization("deb24IAN!");
+	echo $user->verifyAuthorization("test1");
 ?>
 	</body>
 </html>
