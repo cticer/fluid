@@ -149,18 +149,25 @@
 				return false;
 			}
 			
-			public function verifyAuthorization($authorized_key = null)
+			public function verifyAuthorization($email = null, $authorized_key = null, $isemail = false)
 			{
-				if($authorized_key != null)
+				/*
+					TODO: check to see if email is even a valid email
+				*/
+				if($authorized_key != null && $email != null)
 				{
-					$sql = "SELECT * FROM (SELECT *, (UNIX_TIMESTAMP(authorizations.authorization_exp) - UNIX_TIMESTAMP()) as exp FROM authorizations WHERE user_id='".$this->get("row_id")."') as t1 WHERE exp > 0;";
-					echo $sql;
+					$sql = "SELECT * FROM (SELECT *, (UNIX_TIMESTAMP(authorizations.authorization_exp) - UNIX_TIMESTAMP()) as exp FROM authorizations WHERE user_id='".$this->get("row_id")."' AND email='".$email."') as t1 WHERE exp > 0".($isemail ? " AND authorization_type='EMAIL'" : " AND authorization_type='PASSWORD'").";";
 					$query = new Query($GLOBALS['gConn'],$sql);
 					while($query->hasNextRow())
 					{
-						print_r($query->nextRow());
+						$row = $query->nextRow();
+						$encrypted_key = Security::hashPass($row['salt'],$authorized_key);
+						if($encrypted_key === $row['authorized_key'])
+						{
+							return true;
+						}
 					}
-					echo "Attempted Authorization: ".$authorized_key;
+					return false;
 				}
 			}
 		}

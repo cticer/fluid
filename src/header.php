@@ -1,6 +1,9 @@
 <?php
 	session_start();
 	
+	if(!defined('INC_PATH'))
+		define('INC_PATH','/home/content/52/10278052/html/uua/');
+	
 	//$_SESSION['uid'] = 2;
 	//unset($_SESSION['uid']);
 	
@@ -33,6 +36,7 @@
 		$GLOBALS['gConn'] = $database->getConnection();
 	}
 	
+	$_SESSION['uid'] = 3;
 	$GLOBALS['user'] = new User();
 	if(isset($_SESSION['uid']))
 	{

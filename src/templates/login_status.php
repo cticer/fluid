@@ -1,59 +1,23 @@
 <div id="login-status">
 <?php
+	$email = null;
+	//$email = $_POST['email'];
+	//$authorized_key = $_POST['authorized_key'];
+
+	
 	$user = $GLOBALS['user'];
 	
+	//if the user hasn't entered an email, then prompt for one
 	if(!$user->get("email"))
 	{
-		if(isset($_POST['email']))
-		{
-			$userWithEmail = User::getOnExists(array("email"=>$_POST['email']));
-			if($userWithEmail)//if a user exists with the email provided
-			{
-				$delUser = $GLOBALS['user'];
-				echo $delUser->get("row_id");
-				$GLOBALS['user'] = $userWithEmail;
-				if(isset($_POST['password']) && Security::hashPass($GLOBALS['user']->get("salt"),$_POST['password']) == $GLOBALS['user']->get("password"))
-				{
-					$delUser->databaseDelete();
-					$_SESSION['uid'] = $GLOBALS['user']->get("row_id");
-					//$GLOBALS['user'] now contains a logged in user
-				}
-				else
-				{
-	?>
-	<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST"><label for="password">Password</label><input type="password" name="password" id="password"/><input type="hidden" name="email" id="email" value="<?php echo $_POST['email'];?>"/><input type="submit"/></form>
-	<?php
-				}
-				echo $GLOBALS['user']->get("first_name");
-				
-			}
-			else
-			{
-				//they just supplied an email.
-				$GLOBALS['user']->set("email",$_POST['email']);
-				
-				/*
-					GENERATE A RANDOM PASSWORD, SALT AND HASH
-					STORE IN DATABASE ACCORDINGLY AND THEN EMAIL
-					THE DETAILS TO THE USER
-				*/
-			}
-			$GLOBALS['user']->databaseWrite();
-			$GLOBALS['email_prompt'] = false;
-		}
-		else
-		{
-?>
-<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST"><label for="email">Email</label><input type="text" name="email" id="email"/><input type="submit"/></form>
-<?php		
-		}
+		echo "no email set";
 	}
 	else
 	{
-		//user already logged in
-?>
-<h2>Hello, <?php echo $user->get("first_name");?></h2>
-<?php
+		//verify that an email is authorized on an account
+		if($user->verifyAuthorization($user->get("email"),true))
+		{
+			echo "Hello ".$user->get("first_name").", the email address you entered is authorized for login. <form action=\"#\"><input type=\"submit\"/></form> or enter a valid password <form action=\"#\"><input type=\"text\"/><input type=\"submit\"/></form>";
+		}
 	}
 ?>
-</div>

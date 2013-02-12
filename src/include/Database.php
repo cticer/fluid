@@ -13,10 +13,14 @@ if(!class_exists('Database'))
 {
     class Database
     {
+		/*
+			Edit these four to match your mysql credentials and database name
+		*/
         private $host = 'localhost';
         private $db = 'crm';
         private $user = 'webuser';
         private $pass = 'chancey';
+		
         private $conn = null;
         private $result = null;
 		

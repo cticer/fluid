@@ -5,6 +5,9 @@
 		{	
 			public function __construct($IN = array())
 			{
+				$IN['salt'] = Security::createSalt();//create a salt used for encrypting the authorized key
+				$authorized_key = $IN['authorized_key'];
+				$IN['authorized_key'] = Security::hashPass($IN['salt'],$authorized_key);
 				parent::__construct($IN);
 			}
 			
@@ -48,9 +51,8 @@
 				if(!$this->get("row_id") || !$this->exists(array("row_id" => $this->get("row_id"))))
 				{
 					$this->set("row_id",self::nextRowId());
-					$sql = "INSERT INTO authorizations (row_id,authorization_given,authorization_exp) VALUES ('".$this->get("row_id")."',NOW(),TIMESTAMPADD(DAY, 14, NOW()));";
+					$sql = "INSERT INTO authorizations (row_id,authorization_given,authorization_exp,authorization_type) VALUES ('".$this->get("row_id")."',NOW(),TIMESTAMPADD(DAY, 14, NOW()),'PASSWORD');";
 					new Query($GLOBALS['gConn'],$sql);
-					//$this->set("row_id",mysql_insert_id());
 				}
 				$temp = $this->data;
 				foreach($temp as $key => $value)
