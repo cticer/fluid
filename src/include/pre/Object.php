@@ -22,14 +22,17 @@
 			
 			public function get($key)
 			{
-				if(array_key_exists($key,$this->data))
+				if($this->data)
 				{
-					$temparray = $this->data;
-					return $temparray[$key];
-				}
-				else
-				{
-					return null;
+					if(array_key_exists($key,$this->data))
+					{
+						$temparray = $this->data;
+						return $temparray[$key];
+					}
+					else
+					{
+						return null;
+					}
 				}
 			}
 		}

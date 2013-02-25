@@ -36,14 +36,25 @@
 		$GLOBALS['gConn'] = $database->getConnection();
 	}
 	
-	$_SESSION['uid'] = 3;
-	$GLOBALS['user'] = new User();
-	if(isset($_SESSION['uid']))
+	$userLogin = new UserLogin();
+	$userLogin->init();
+	$GLOBALS['login'] = $userLogin;
+	
+	//$_SESSION['uid'] = 3;
+	$user = null;
+	$userLogin->verifyLogin();
+	if(isset($_SESSION['uid']) || $userLogin->verifyLogin())
 	{
-		$GLOBALS['user'] = User::getByRowId($_SESSION['uid']);
+		//echo "Login verified";
+		$user = User::getByRowId($_SESSION['uid']);
 		$GLOBALS['email_prompt'] = false;
 		$GLOBALS['pw_promt'] = false;
 	}
+	else
+	{
+		$user = new User();
+	}
+	$GLOBALS['user'] = $user;
 	$GLOBALS['user']->databaseWrite();
 	$_SESSION['uid'] = $GLOBALS['user']->get("row_id");
 	

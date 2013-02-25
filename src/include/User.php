@@ -149,7 +149,7 @@
 				return false;
 			}
 			
-			public function verifyAuthorization($email = null, $authorized_key = null, $isemail = false)
+			public function verifyAuthorization($email = null, $authorized_key = null, $isemail = false, $encrypted = false)
 			{
 				/*
 					TODO: check to see if email is even a valid email
@@ -161,7 +161,11 @@
 					while($query->hasNextRow())
 					{
 						$row = $query->nextRow();
-						$encrypted_key = Security::hashPass($row['salt'],$authorized_key);
+						$encrypted_key = $authorized_key;
+						if(!$encrypted)
+						{
+							$encrypted_key = Security::hashPass($row['salt'],$authorized_key);
+						}
 						if($encrypted_key === $row['authorized_key'])
 						{
 							return true;
